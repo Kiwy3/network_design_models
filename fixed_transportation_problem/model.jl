@@ -6,8 +6,8 @@ function create_model(instance::Network)
     model = Model(HiGHS.Optimizer)
 
     # Define variables
-    @variable(model, y[arc in instance.arcs ], Bin)  # Flow on arcs
-    @variable(model, x[arc in instance.arcs] >= 0)  # Flow on arcs
+    @variable(model, y[instance.arcs ], Bin)  # Flow on arcs
+    @variable(model, x[instance.arcs] >= 0)  # Flow on arcs
 
     # Objective: Minimize total cost
     @objective(model, Min, sum(arc.variable_cost * x[arc] + arc.fixed_cost * y[arc] for arc in instance.arcs))
@@ -26,7 +26,7 @@ function create_model(instance::Network)
     return model
 end
 
-function extract_solution(model::Model, instance::Network)::Solution
+function extract_solution(model::Model, instance::Network)::FTPSolution
     x_values = value.(model[:x])
     y_values = value.(model[:y])
 
