@@ -10,22 +10,17 @@ include("objects.jl")
 include("utilities.jl")
 include("model.jl")
 
+function model_optimization(problem, instance_name)
+    instance = load_instance(instance_name, problem)
+    model = create_model(instance)
 
-
-problem = McndProblem()
-instance = load_instance("instances/mcnd_c33.json", problem)
-
-problem = FtpProblem()
-instance = load_instance("instances/ftp.json", problem)
-
-println("Loaded instance:\n\n $(instance)")
+    optimize!(model)
+    solution = extract_solution(model, instance)
+    println("$(solution)")
 
 
 
-model = create_model(instance)
+end
 
 
-optimize!(model)
-
-solution = extract_solution(model, instance)
-println("$(solution)")
+model_optimization(FtpProblem(), "instances/ftp.json")
