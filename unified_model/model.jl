@@ -46,7 +46,12 @@ function create_model(instance::McndInstance)::Model
 end
 
 function extract_solution(model::Model, instance::McndInstance)::McndSolution
-    x_values = value.(model[:x])
+    x_values = Matrix{Int}(undef, length(instance.arcs), length(instance.commodities))
+    for (i, arc) in enumerate(instance.arcs)
+        for (j, commodity) in enumerate(instance.commodities)
+            x_values[i, j] = value(model[:x][arc, commodity])
+        end
+    end
     y_values = value.(model[:y])
     objective_value = JuMP.objective_value(model)
     solution = McndSolution(instance, objective_value, x_values, y_values)

@@ -23,4 +23,4 @@ function model_optimization(problem, instance_name)
 end
 
 
-model_optimization(FtpProblem(), "instances/ftp.json")
+model_optimization(McndProblem(), "instances/mcnd_ex.json")

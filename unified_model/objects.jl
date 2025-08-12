@@ -82,7 +82,7 @@ struct McndSolution
 end
 
 function Base.show(io::IO, solution::McndSolution)
-    print(io, "------ Solution of the FTP problem, for the instance $(solution.instance.name) ------ \n")
+    print(io, "------ Solution of the Mcnd problem, for the instance $(solution.instance.name) ------ \n")
 
     print(io, "Objective value: $(solution.objective_value)\n")
     fixed_cost = sum(arc.fixed_cost * solution.y[i] for (i, arc) in enumerate(solution.instance.arcs))
@@ -91,8 +91,20 @@ function Base.show(io::IO, solution::McndSolution)
 
     print(io, "Arcs : \n")
     for (i, arc) in enumerate(solution.instance.arcs)
-        print(io, "\t$(arc.origin.name) -> $(arc.destination.name): x : $(solution.x[i]), y : $(solution.y[i])\n")
+        print(io, "\t$(arc.origin.name) -> $(arc.destination.name): y : $(solution.y[i]) -- sum x : $(sum(solution.x[i, j] for j in 1:size(solution.x, 2)))\n")
     end
+
+    print(io, "Commodities")
+    for (k, commodity) in enumerate(solution.instance.commodities)
+        print(io, "\tCommodity from $(commodity.origin.name) to $(commodity.destination.name) with quantity of $(commodity.demand):\n")
+        for (i, arc) in enumerate(solution.instance.arcs)
+            if solution.x[i, k] > 0
+                print(io, "\t\tArc $(arc.origin.name) -> $(arc.destination.name): flow = $(solution.x[i, k])\n")
+            end
+        end
+    end
+
+    println(solution.x)
 
     # print(io, "Variables values :\n\t x:$(solution.x)\n \t y:$(solution.y)\n")
 
